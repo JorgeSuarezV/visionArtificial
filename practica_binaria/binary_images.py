@@ -3,7 +3,7 @@ import cv2 as cv
 # ejercicio 1
 # Generar una imagen binaria normal y otra invertida sobre la cámara, controlando el umbral con una barra deslizante
 # maximo valor del slider
-alpha_slider_max = 100
+alpha_slider_max = 255
 
 # muestra una imagen binaria normal y controla umbral con trackbar
 def binary(val):
