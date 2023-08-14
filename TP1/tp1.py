@@ -1,32 +1,56 @@
 import cv2 as cv
 
-# iniciamos la capturadora con el nombre cap
-cap = cv.VideoCapture(0)
-
-cv.namedWindow('img1')
-
-last_value = 0
+from contours import get_contours
 
 
-def calculate_image(val):
-    global last_value
-    last_value = val
-    gray = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
-    ret1, thresh1 = cv.threshold(gray, val, 255, cv.THRESH_BINARY)
-    cv.imshow("img1", thresh1)
+def calculate_image(value):
+    pass
 
 
-cv.createTrackbar('Trackbar', 'img1', 0, 255, calculate_image)
+def show_original_window(frame):
+    cv.imshow("original", frame)
 
-while True:
-    ret, frame = cap.read()
-    frame = cv.flip(frame, 1)
-    calculate_image(last_value)
 
-    # al presionar z salimos del loop
-    if cv.waitKey(10) == ord('z'):
-        break
+def binary_image(original_frame, trackbar_value):
+    gray = cv.cvtColor(original_frame, cv.COLOR_RGB2GRAY)
+    _, thresh1 = cv.threshold(gray, trackbar_value, 255, cv.THRESH_BINARY)
+    return thresh1
 
-# apagamos la capturadora y cerramos las ventanas que se nos abrieron
-cap.release()
+
+def deionised_image(image):
+    kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, (10, 10))
+    opening = cv.morphologyEx(image, cv.MORPH_OPEN, kernel)
+    return cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel)
+
+
+def main():
+    # iniciamos la capturadora con el nombre cap
+    cap = cv.VideoCapture(0)
+
+    cv.namedWindow('original')
+    cv.namedWindow('gray')
+    cv.createTrackbar('Gray Thresh', 'original', 0, 255, calculate_image)
+    # cv.createTrackbar('Contours thresh', 'original', 10, 255, calculate_contours)
+
+    while True:
+        _, original_frame = cap.read()
+        original_frame = cv.flip(original_frame,1)
+
+        trackbar_value = cv.getTrackbarPos('Gray Thresh', 'original')
+        bg_image = binary_image(original_frame, trackbar_value)
+        cv.imshow("gray", bg_image)
+
+        d_image = deionised_image(bg_image)
+
+        get_contours(d_image, original_frame)
+        show_original_window(original_frame)
+
+        if cv.waitKey(10) == ord('z'):
+            break
+
+    # apagamos la capturadora y cerramos las ventanas que se nos abrieron
+    cap.release()
+
+
+main()
 cv.destroyAllWindows()

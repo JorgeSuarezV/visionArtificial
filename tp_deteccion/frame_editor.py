@@ -20,4 +20,3 @@ def draw_contours(frame, contours, color, thickness):
     # -1 for all contours
     cv2.drawContours(frame, contours, -1, color, thickness)
     return frame
-
