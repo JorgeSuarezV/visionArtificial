@@ -18,12 +18,12 @@ def get_shape(shape):
     conts = get_contours(d_image)
     if len(conts) > 0:
         cv.drawContours(binary, conts, -1, (255, 255, 0), 3)
-        cv.imshow(f"{shape}", binary)
+        # cv.imshow(f"{shape}", binary)
         return conts[0]
 
 
 def check_shape(contour, image, threshold):
-    return cv.matchShapes(contour, image, cv.CONTOURS_MATCH_I2, 0) < threshold
+    return threshold - cv.matchShapes(contour, image, 1, 0)
 
 
 def draw_shape(contour, name, color, image):
