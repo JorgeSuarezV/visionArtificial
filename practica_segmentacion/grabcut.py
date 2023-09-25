@@ -18,7 +18,7 @@ print(mask)
 cv.grabCut(img, mask, rect, bgdModel, fgdModel, 10, cv.GC_INIT_WITH_RECT)
 
 print(mask)
-# ????????????
+
 mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
 
 print(mask2)
